@@ -1,1 +1,3 @@
 # ILoveMinigame
+
+Commit test
