@@ -37,6 +37,13 @@ body {
     /*display:flex;*/
     justify-content: flex-end;
 }
+#header-left-title{
+    padding: 0 8px 0 0;
+    border-radius: 5px;
+}
+#header-left-title:hover{
+    background-color: #48484B
+}
 
 .header-submenu {
     margin: auto 0;
@@ -76,9 +83,16 @@ body {
     margin: auto auto 0;
 }
 
-.navigator_submenu svg{
+.navigator_submenu{
 }
 
+.submenu{
+    border-radius: 5px;
+    padding: 0 4px;
+}
+.submenu:hover{
+    background-color: #48484B;
+}
 .submenu svg{
     margin: 10px 5px;
 }
@@ -98,23 +112,27 @@ body {
     height: 100%;
     width: 980px;
 
-    margin: auto;
-    background-color: #fff;
+    margin: 30px auto;
+    padding: 40px;
 
-    padding: 40px
+    border-radius: 5px;
+    border: 1px solid #444;
+    background-color: #1c1d1f;
+
 }
 
 #content table{
     height: 100px;
     width: 900px;
 
-    border-collapse: collapse;
+    color: #fff;
 
+    border-collapse: collapse;
     margin: 0 auto 40px;
 }
 
 #content th, td{
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #444;
     padding: 10px;
 }
 
@@ -125,6 +143,7 @@ body {
 /* paging */
 #paging{
     width: 200px;
+    color: #fff;
 
     text-align: center;
     margin: auto;
