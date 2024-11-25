@@ -51,8 +51,8 @@ body {
 
 /* Navigator */
 #navigator{
-    width: 50px;
-    height: 85px;
+    width: 170px;
+    height: 120px;
 
     display:flex;
     flex-direction: column;
@@ -82,8 +82,13 @@ body {
     display:none;
     margin: auto auto 0;
 }
-
-.navigator_submenu{
+.navigator-submenu{
+    width: 160px;
+    text-align: left;
+}
+.navigator-submenu-text{
+    font-size: 12px;
+    padding-right: 5px;
 }
 
 .submenu{
@@ -99,7 +104,6 @@ body {
 
 /* container */
 #container{
-    height: 100%;
     width: 100%;
     display: flex;
 
