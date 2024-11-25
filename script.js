@@ -90,75 +90,60 @@ function parsePrice(price){
     }
     return parsedPrice
 }
-function getItemSimpleInfo(items){
-    let itemNames = []
-    items.forEach(i => {
-        i.forEach(item => {
-            itemNames.push([item['item_name'], item['date_auction_expire'], parsePrice(item['auction_price_per_unit'])])
-        })
-    })
-    console.log(itemNames)
-    return itemNames
-}
+
 function getItemDetailInfo(items){
-    let itemNames = []
+    let itemInfos = []
     items.forEach(i => {
         i.forEach(item => {
-            itemNames.push([item['item_name'], item['date_auction_expire'], parsePrice(item['auction_price_per_unit'])])
+            itemInfos.push({
+                "item_name": item['item_name'],
+                "item_display_name": item['item_display_name'],
+                "item_count": item['item_count'],
+                "auction_price_per_unit": item['auction_price_per_unit'],
+                "date_auction_expire": item['date_auction_expire'],
+                "item_option": item['item_option']
+            })
         })
     })
-    console.log(itemNames)
-    return itemNames
+    return itemInfos
 }
-function drawTable(items){
-    let itemNames = getItemSimpleInfo(items)
+function drawTable(items, paging = 0){
+    NUMBER_OF_ITEMS = 50
+
+    let itemInfos = getItemDetailInfo(items)
     let table = document.getElementById('item-list')
     let tbody = document.createElement('tbody')
     table.appendChild(tbody)
 
-    for (let i=0; i<50; i++){
+    for (let i=0; i<NUMBER_OF_ITEMS; i++){
         let tr = document.createElement('tr')
         tbody.appendChild(tr)
 
         let td = document.createElement('td')
-        td.innerText = i+1
+        td.classList.add('item-list-no')
+        td.innerText = NUMBER_OF_ITEMS*paging+i+1
         tr.appendChild(td)
         td = document.createElement('td')
-        td.innerText = itemNames[i][0]
+        td.classList.add('item-list-name')
+        td.innerText = itemInfos[NUMBER_OF_ITEMS*paging+i]['item_name']
         tr.appendChild(td)
         td = document.createElement('td')
-        td.innerText = itemNames[i][2]
+        td.classList.add('item-list-price')
+        td.innerText = parsePrice(itemInfos[NUMBER_OF_ITEMS*paging+i]['auction_price_per_unit'])
+        // drawDetail(td)
         tr.appendChild(td)
     }
-    // itemNames.forEach(item => {
-    //
-    //     // item.forEach(i => {
-    //     //     let td = document.createElement('td')
-    //     //     td.innerText = i
-    //     //     tr.appendChild(td)
-    //     //     td = document.createElement('td')
-    //     //     td.innerText = i[0]
-    //     //     tr.appendChild(td)
-    //     //     td = document.createElement('td')
-    //     //     td.innerText = i[2]
-    //     //     tr.appendChild(td)
-    //     // })
-    //
-    //     for (let i=0; i<50; i++){
-    //         let tr = document.createElement('tr')
-    //         tbody.appendChild(tr)
-    //
-    //         let td = document.createElement('td')
-    //         td.innerText = i
-    //         tr.appendChild(td)
-    //         td = document.createElement('td')
-    //         td.innerText = item[i][0]
-    //         tr.appendChild(td)
-    //         td = document.createElement('td')
-    //         td.innerText = item[i][2]
-    //         tr.appendChild(td)
-    //     }
-    // })
+}
+
+// TODO: draw paging
+function drawPaging(items){
+
+}
+
+function drawDetail(td, item){
+    td.addEventListner('hover', function(){
+        console.log('hover')
+    })
 }
 
 $(document).ready(function () {

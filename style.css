@@ -138,12 +138,13 @@ body {
 #content th, td{
     border-bottom: 1px solid #444;
     padding: 10px;
+
+    text-align:center;
 }
 
-#content th{
-    text-align: center;
+#content .item-list-price{
+    text-align: right;
 }
-
 /* paging */
 #paging{
     width: 200px;
