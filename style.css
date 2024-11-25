@@ -42,7 +42,7 @@ body {
     border-radius: 5px;
 }
 #header-left-title:hover{
-    background-color: #48484B
+    background-color: hsla(0,0%,100%,.1)
 }
 
 .header-submenu {
@@ -96,7 +96,8 @@ body {
     padding: 0 4px;
 }
 .submenu:hover{
-    background-color: #48484B;
+    background-color: hsla(0,0%,100%,.1)
+    /*background-color: #48484B;*/
 }
 .submenu svg{
     margin: 10px 5px;

@@ -53,18 +53,6 @@ function getDataByName(name, cursor = null){
     })
 }
 
-function changeTheme(){
-    let theme = document.getElementById('navigator-theme-text')
-    let themeText = theme.innerText
-
-    if (themeText == '밝은 모드로'){
-        theme.innerText = '다크 모드로'
-    }
-    else{
-        theme.innerText = '밝은 모드로'
-    }
-}
-
 function getSampleItems(){
     fetch('data/items.json')
         .then(response => {
@@ -147,9 +135,6 @@ function drawDetail(td, item){
 }
 
 $(document).ready(function () {
-    $('#navigator-theme').click(function(){
-        changeTheme()
-    })
 
     getSampleItems()
 })
