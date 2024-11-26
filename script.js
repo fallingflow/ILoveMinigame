@@ -2,7 +2,6 @@ address = "https://open.api.nexon.com/mabinogi/v1/auction/list"
 API_KEY = "test_3aea5b595556584ab54c0245a7e2a9eabac8e93dac17f6ee655c7eee8787f8cdefe8d04e6d233bd35cf2fabdeb93fb0d"
 
 items = []
-NUMBER_OF_ITEMS = 50
 
 function getDataByCategory(category, cursor = null, paging = 0) {
     url = address + "?auction_item_category=" + category
@@ -109,6 +108,7 @@ function getItemDetailInfo(items){
     return itemInfos
 }
 function drawTable(items, paging = 0){
+    NUMBER_OF_ITEMS = 50
 
     let itemInfos = getItemDetailInfo(items)
     let table = document.getElementById('item-list')
@@ -135,58 +135,8 @@ function drawTable(items, paging = 0){
     }
 }
 
-function drawPagingNum2(i){
-    if(i != null){
-        $('paging-btn')[i].innerText = i
-        $('paging-btn')[i].style.display = 'block'
-    }
-    else{
-        $('paging-btn')[i].style.display = 'none'
-    }
-}
-function drawPagingNum(prev, a, b, c, d, e, end){
-    if (prev){
-        $('#paging-prev').css('display', 'none')
-        $('#paging-first').css('display', 'none')
-    }
-    else{
-        $('#paging-prev').css('display', 'block')
-        $('#paging-first').css('display', 'block')
-    }
-    drawPagingNum2(a)
-    drawPagingNum2(b)
-    drawPagingNum2(c)
-    drawPagingNum2(d)
-    drawPagingNum2(e)
-    if(end){
-        $('#paging-next').css('display', 'none')
-        $('#paging-end').css('display', 'none')
-    }
-    else{
-        $('#paging-next').css('display', 'block')
-        $('#paging-end').css('display', 'block')
-    }
-}
 // TODO: draw paging
-function drawPaging(items, paging){
-    let pagingNum = Math.ceil(items.length/NUMBER_OF_ITEMS)
-    let pagingBtn = document.getElementById('paging-btn')
-    let pagingBtns = []
-    for (let i=0; i<pagingNum; i++){
-        let btn = document.createElement('button')
-        btn.classList.add('paging-btn')
-        btn.innerText = i+1
-        btn.style.display = 'none'
-        pagingBtn.appendChild(btn)
-        pagingBtns.push(btn)
-    }
-    drawPagingNum(true, null, null, 1, 2, 3, false)
-    pagingBtns.forEach(btn => {
-        btn.addEventListener('click', function(){
-            let paging = btn.innerText
-            drawTable(items, paging)
-        })
-    })
+function drawPaging(items){
 
 }
 
