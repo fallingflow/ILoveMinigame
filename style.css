@@ -157,3 +157,7 @@ body {
 .paging-btn svg{
     padding-bottom: 3px;
 }
+
+#paging-first, #paging-prev{
+    display: none;
+}
