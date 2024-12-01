@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'MabinogiClassicR';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2207-01@1.0/MabinogiClassicR.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
     width: 100%;
     background-color: #000;
@@ -124,6 +131,8 @@ body {
     border: 1px solid #444;
     background-color: #1c1d1f;
 
+    font-family:'MabinogiClassicR';
+
 }
 
 #content table{
@@ -138,13 +147,12 @@ body {
 
 #content th, td{
     border-bottom: 1px solid #444;
-    padding: 10px;
+    padding: 15px 0 12px;
 
     text-align:center;
 }
 
 #content .item-list-price{
-    text-align: right;
 }
 /* paging */
 #paging{
