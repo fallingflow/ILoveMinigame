@@ -239,6 +239,38 @@ function parsePrice(price){
     return parsedPrice
 }
 
+function parsePrice(price) {
+    let priceStr = price.toString();
+    let priceLen = priceStr.length;
+
+    if (priceLen <= 4) {
+        return priceStr +" 골드";
+    }
+
+    let parsedPrice = "";
+    let units = ["", "만", "억"];
+    let unitIndex = 0;
+
+    if (priceLen <= 4){ units = [""]; }
+    else if (priceLen <= 8){ units = ["만", ""];}
+    else if (priceLen <= 12){ units = ["억", "만", ""];}
+
+    while (priceLen > 0) {
+        let chunkSize = priceLen % 4 === 0 ? 4 : priceLen % 4;
+        let chunk = priceStr.slice(0, chunkSize);
+        priceStr = priceStr.slice(chunkSize);
+        priceLen -= chunkSize;
+
+        if (chunk !== "0000") {
+            chunk = chunk.replace(/^0+/, "");
+            parsedPrice = parsedPrice + " " + chunk + units[unitIndex];
+        }
+        unitIndex++;
+    }
+
+    return parsedPrice + " 골드";
+}
+
 function getItemDetailInfo(items){
     let itemInfos = []
     items.forEach(i => {
