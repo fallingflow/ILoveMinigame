@@ -24,7 +24,7 @@ function changeTheme(){
         $('#content th, td').css('border-bottom', '1px solid #ccc')
         $('#item-list').css('color', '#000')
 
-        $('#paging').css('color', '#000')
+        $('#paging li a').css('color', '#000')
     }
     else{
         theme.innerText = '밝은 모드로'
@@ -46,7 +46,7 @@ function changeTheme(){
         $('#content th, td').css('border-bottom', '1px solid #444')
         $('#item-list').css('color', '#fff')
 
-        $('#paging').css('color', '#fff')
+        $('#paging li a').css('color', '#fff')
     }
 }
 

@@ -148,17 +148,25 @@ body {
 }
 /* paging */
 #paging{
-    width: 200px;
-    color: #fff;
-
-    text-align: center;
-    margin: auto;
+    display: inline;
 }
 
 .paging-btn svg{
     padding-bottom: 3px;
 }
 
-#paging-first, #paging-prev{
-    display: none;
+#paging li{
+    display: inline;
+
+}
+
+#paging li a{
+    color: #fff;
+    padding: 0 5px;
+    text-decoration: none;
+}
+
+#page-current{
+    background-color: #F09319;
+    color: #fff;
 }

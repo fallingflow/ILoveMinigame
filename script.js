@@ -1,4 +1,3 @@
-let items = []
 let NUMBER_OF_ITEMS = 50
 
 class Ajax {
@@ -16,30 +15,146 @@ class Ajax {
     parsePrice(price){}
 
 }
-export default class Pagination {
+class Pagination {
     constructor(data, itemsPerPage){
         this.data = data;
+        this.totalCount = data.length;
+
         this.itemsPerPage = itemsPerPage;
-        this.totalPages = Math.ceil(data.length / itemsPerPage);
-        this.currentPage = 1;
+        this.totalPage = Math.ceil(data.length / itemsPerPage);
+        this.pageGroupNum = 10
+
     }
 
-    createPagination() {
-        const paginationContainer =  $('#paging')
+    renderPagination(currentPage){
+        if(this. totalCount <= 20) return;
 
-        let startPage = 1;
-        if(this.crurentPage> 4){
-            startPage = currentPage - 2
-        }
-        let endPage = startPage + 4;
-        if(endPage > this.totalPages){
-            endPage = this.totalPages
-            startPage = this.totalPages - 4
-        }
-        if (startPage < 1){
-            startPage = 1
-        }
+        let pageGroup = Math.ceil(currentPage / this.pageGroupNum);
 
+        let end = pageGroup * this.pageGroupNum;
+        if (end > this.totalPage) end = this.totalPage;
+        let start = end - (this.pageGroupNum - 1) <= 0 ? 1 : end - (this.pageGroupNum - 1);
+
+        const fragmentPage = document.createDocumentFragment();
+
+        let prev = start - 1;
+        let next = end + 1;
+
+        if (prev > 0){
+            let allpreli = document.createElement('li');
+            allpreli.insertAdjacentHTML("beforeend", `<a href="#" id="allprev">&lt;&lt;</a>`);
+
+            let preli = document.createElement('li');
+            preli.insertAdjacentHTML("beforeend", `<a href="#" id="prev">&lt;</a>`);
+
+            fragmentPage.appendChild(allpreli);
+            fragmentPage.appendChild(preli);
+        }
+        for (let i = start; i <= end; i++){
+            const li = document.createElement('li');
+            if (i == currentPage){
+                li.insertAdjacentHTML("beforeend", `<a href="#" id="page-${i}" style="padding:2px 5px; background-color: #f09319; color:#fff;">${i}</a>`);
+            }
+            else{
+                li.insertAdjacentHTML("beforeend", `<a href="#" id="page-${i} style="padding:5px;">${i}</a>`);
+            }
+            fragmentPage.appendChild(li)
+
+        }
+        if(end < this.totalPage){
+            let allendli = document.createElement('li');
+            allendli.insertAdjacentHTML("beforeend", `<a href="#" id="allnext">&gt;&gt;</a>`);
+
+            let endli = document.createElement('li');
+            endli.insertAdjacentHTML("beforeend", `<a href="#" id="next">&gt;</a>`);
+
+            fragmentPage.appendChild(endli);
+            fragmentPage.appendChild(allendli);
+        }
+        document.getElementById('paging').appendChild(fragmentPage);
+
+        $('#paging a').click((e)=> {
+            e.preventDefault();
+            let $clickedItem = $(e.currentTarget);
+            let $id = $clickedItem.attr('id');
+            let selectedPage
+
+            if ($id == 'prev') {
+                selectedPage = prev
+            } else if ($id == 'next') {
+                selectedPage = next
+            } else if ($id == 'allprev') {
+                selectedPage = 1;
+            } else if ($id == 'allnext') {
+                selectedPage = this.totalPage;
+            } else {
+                selectedPage = parseInt($clickedItem.text());
+            }
+
+            console.log(selectedPage)
+            document.getElementById('paging').innerHTML = ""
+            this.renderPagination(selectedPage)
+            this.drawTable(selectedPage)
+
+        });
+
+        const parent = document.getElementById('paging').parentElement;
+        const paging = document.getElementById('paging');
+        const parentWidth = parent.offsetWidth;
+        const pagingWidth = paging.offsetWidth;
+        console.log(parentWidth, pagingWidth)
+        paging.style.marginLeft = `${(parentWidth - pagingWidth-50) / 2}px`;
+    }
+
+    drawTable(n){
+        console.log(this.data)
+        let table = document.getElementById('item-list')
+        table.innerHTML = ""
+
+        let thead = document.createElement('thead')
+        table.appendChild(thead)
+
+        let tr = document.createElement('tr')
+        thead.appendChild(tr)
+
+        let th = document.createElement('th')
+        th.innerText = '번호'
+        tr.appendChild(th)
+
+        th = document.createElement('th')
+        th.innerText = '아이템명'
+        tr.appendChild(th)
+
+        th = document.createElement('th')
+        th.innerText = '가격'
+        tr.appendChild(th)
+
+        let tbody = document.createElement('tbody')
+        table.appendChild(tbody)
+
+        for (let i=0; i<this.itemsPerPage; i++){
+            let itemIndex = this.itemsPerPage * (n-1) + i
+            let item = this.data[itemIndex];
+
+            let tr = document.createElement('tr')
+            tbody.appendChild(tr)
+
+            let td = document.createElement('td')
+            td.classList.add('item-list-no')
+            td.innerText = itemIndex + 1;
+            tr.appendChild(td)
+
+            td = document.createElement('td')
+            td.classList.add('item-list-name')
+            td.innerText = item['item_name']
+            tr.appendChild(td)
+
+            td = document.createElement('td')
+            td.classList.add('item-list-price')
+            td.innerText = parsePrice(item['auction_price_per_unit'])
+            // drawDetail(td)
+            tr.appendChild(td)
+        }
     }
 }
 
@@ -93,15 +208,20 @@ function getDataByName(name, cursor = null){
     })
 }
 
-function getSampleData(){
-    fetch('data/items.json')
-        .then(response => {
-            return response.json()
-        })
-        .then(data => {
-            drawTable(data)
-        })
-    return []
+async function getSampleData(){
+    try{
+        const response = await fetch('data/items.json');
+
+        if(!response.ok){
+            throw new Error('Network response was not ok');
+        }
+        const jsonData = await response.json();
+        const dataArray = Array.isArray(jsonData) ? jsonData : Object.values(jsonData);
+        return dataArray
+    } catch (error){
+        console.error("Error fetching JSON:", error);
+        throw [];
+    }
 }
 
 function parsePrice(price){
@@ -135,48 +255,35 @@ function getItemDetailInfo(items){
     })
     return itemInfos
 }
-function drawTable(items, paging = 0){
-
-
-    let itemInfos = getItemDetailInfo(items)
-    let table = document.getElementById('item-list')
-    let tbody = document.createElement('tbody')
-    table.appendChild(tbody)
-
-    for (let i=0; i<NUMBER_OF_ITEMS; i++){
-        let tr = document.createElement('tr')
-        tbody.appendChild(tr)
-
-        let td = document.createElement('td')
-        td.classList.add('item-list-no')
-        td.innerText = NUMBER_OF_ITEMS*paging+i+1
-        tr.appendChild(td)
-        td = document.createElement('td')
-        td.classList.add('item-list-name')
-        td.innerText = itemInfos[NUMBER_OF_ITEMS*paging+i]['item_name']
-        tr.appendChild(td)
-        td = document.createElement('td')
-        td.classList.add('item-list-price')
-        td.innerText = parsePrice(itemInfos[NUMBER_OF_ITEMS*paging+i]['auction_price_per_unit'])
-        // drawDetail(td)
-        tr.appendChild(td)
-    }
-}
 
 // TODO: draw paging
 function drawPaging(items){
 
 }
 
-function drawDetail(td, item){
-    td.addEventListner('hover', function(){
-        console.log('hover')
-    })
-}
+// function drawDetail(td, item){
+//     td.addEventListner('hover', function(){
+//         console.log('hover')
+//     })
+// }
 
 $(document).ready(function () {
     let ajax = new Ajax(
         "https://open.api.nexon.com/mabinogi/v1/auction/list",
         "test_3aea5b595556584ab54c0245a7e2a9eabac8e93dac17f6ee655c7eee8787f8cdefe8d04e6d233bd35cf2fabdeb93fb0d"
     )
-})
+
+    let infos
+    getSampleData()
+        .then(data => {
+            infos = getItemDetailInfo(data)
+
+            itemsPerPage = 20;
+            let paging = new Pagination(infos, itemsPerPage);
+            paging.renderPagination(1)
+            paging.drawTable(1)
+
+        }).catch(error => {
+        console.error("Error fetching JSON:", error);
+        })
+    })
