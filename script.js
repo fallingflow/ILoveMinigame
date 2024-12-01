@@ -1,10 +1,50 @@
-address = "https://open.api.nexon.com/mabinogi/v1/auction/list"
-API_KEY = "test_3aea5b595556584ab54c0245a7e2a9eabac8e93dac17f6ee655c7eee8787f8cdefe8d04e6d233bd35cf2fabdeb93fb0d"
+let items = []
+let NUMBER_OF_ITEMS = 50
 
-items = []
+class Ajax {
+    constructor(address, apiKey){
+        this.address = address;
+        this.apiKey = apiKey;
+    }
+
+    getDataByCategory(category, cursor = null, paging = 0){}
+    getDataByName(name, cursor = null){}
+    getSampleData(){}
+
+    getItemDetailInfo(items){}
+
+    parsePrice(price){}
+
+}
+export default class Pagination {
+    constructor(data, itemsPerPage){
+        this.data = data;
+        this.itemsPerPage = itemsPerPage;
+        this.totalPages = Math.ceil(data.length / itemsPerPage);
+        this.currentPage = 1;
+    }
+
+    createPagination() {
+        const paginationContainer =  $('#paging')
+
+        let startPage = 1;
+        if(this.crurentPage> 4){
+            startPage = currentPage - 2
+        }
+        let endPage = startPage + 4;
+        if(endPage > this.totalPages){
+            endPage = this.totalPages
+            startPage = this.totalPages - 4
+        }
+        if (startPage < 1){
+            startPage = 1
+        }
+
+    }
+}
 
 function getDataByCategory(category, cursor = null, paging = 0) {
-    url = address + "?auction_item_category=" + category
+    let url = address + "?auction_item_category=" + category
 
     if (cursor != null){
         url += "&cursor=" + cursor
@@ -37,7 +77,7 @@ function getDataByCategory(category, cursor = null, paging = 0) {
 }
 
 function getDataByName(name, cursor = null){
-    url = address + "?item_name=" + name
+    let url = address + "?item_name=" + name
     if (cursor != null){
         url += "&cursor=" + cursor
     }
@@ -53,19 +93,7 @@ function getDataByName(name, cursor = null){
     })
 }
 
-function changeTheme(){
-    let theme = document.getElementById('navigator-theme-text')
-    let themeText = theme.innerText
-
-    if (themeText == '밝은 모드로'){
-        theme.innerText = '다크 모드로'
-    }
-
-        theme.innerText = '밝은 모드로'
-    }
-}else{
-
-function getSampleItems(){
+function getSampleData(){
     fetch('data/items.json')
         .then(response => {
             return response.json()
@@ -108,7 +136,7 @@ function getItemDetailInfo(items){
     return itemInfos
 }
 function drawTable(items, paging = 0){
-    NUMBER_OF_ITEMS = 50
+
 
     let itemInfos = getItemDetailInfo(items)
     let table = document.getElementById('item-list')
@@ -147,9 +175,8 @@ function drawDetail(td, item){
 }
 
 $(document).ready(function () {
-    $('#navigator-theme').click(function(){
-        changeTheme()
-    })
-
-    getSampleItems()
+    let ajax = new Ajax(
+        "https://open.api.nexon.com/mabinogi/v1/auction/list",
+        "test_3aea5b595556584ab54c0245a7e2a9eabac8e93dac17f6ee655c7eee8787f8cdefe8d04e6d233bd35cf2fabdeb93fb0d"
+    )
 })
