@@ -152,6 +152,15 @@ class Pagination {
             td = document.createElement('td')
             td.classList.add('item-list-price')
             td.innerText = parsePrice(item['auction_price_per_unit'])
+            if(item['auction_price_per_unit'] >= 100000000){
+                td.style.color = '#e88d90';
+                td.style.fontWeight = 'bold';
+                td.style.textShadow = '0 0 5px #9b3e42';
+            } else if (item['auction_price_per_unit'] >= 10000){
+                td.style.color = '#94c1dd';
+                td.style.fontWeight = 'bold';
+                td.style.textShadow = '0 0 5px #69889C';
+            }
             // drawDetail(td)
             tr.appendChild(td)
         }
@@ -244,7 +253,7 @@ function parsePrice(price) {
     let priceLen = priceStr.length;
 
     if (priceLen <= 4) {
-        return priceStr +" 골드";
+        return priceStr +" Gold";
     }
 
     let parsedPrice = "";
@@ -263,12 +272,12 @@ function parsePrice(price) {
 
         if (chunk !== "0000") {
             chunk = chunk.replace(/^0+/, "");
-            parsedPrice = parsedPrice + " " + chunk + units[unitIndex];
+            parsedPrice = parsedPrice + "" + chunk + units[unitIndex];
         }
         unitIndex++;
     }
 
-    return parsedPrice + " 골드";
+    return parsedPrice + " Gold";
 }
 
 function getItemDetailInfo(items){
