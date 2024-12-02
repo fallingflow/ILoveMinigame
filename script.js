@@ -267,6 +267,12 @@ class Pagination {
                         detail_item_option_content.innerText = "["+item_option[i]['option_sub_type'] +"] " + item_option[i]['option_value'];
                         detail_item_option.appendChild(detail_item_option_content)
                     }
+                    if(item_option[i]['option_type'] == '남은 거래 횟수'){
+                        detail_item_option_content = document.createElement('div')
+                        detail_item_option_content.classList.add('item-option-content')
+                        detail_item_option_content.innerText = "남은 거래 가능 횟수 : " + item_option[i]['option_value'];
+                        detail_item_option.appendChild(detail_item_option_content)
+                    }
 
 
                 }
