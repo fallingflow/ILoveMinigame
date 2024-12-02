@@ -91,7 +91,6 @@ class Pagination {
                 selectedPage = parseInt($clickedItem.text());
             }
 
-            console.log(selectedPage)
             document.getElementById('paging').innerHTML = ""
             this.renderPagination(selectedPage)
             this.drawTable(selectedPage)
@@ -102,12 +101,10 @@ class Pagination {
         const paging = document.getElementById('paging');
         const parentWidth = parent.offsetWidth;
         const pagingWidth = paging.offsetWidth;
-        console.log(parentWidth, pagingWidth)
         paging.style.marginLeft = `${(parentWidth - pagingWidth-50) / 2}px`;
     }
 
     drawTable(n){
-        console.log(this.data)
         let table = document.getElementById('item-list')
         table.innerHTML = ""
 
@@ -123,6 +120,14 @@ class Pagination {
 
         th = document.createElement('th')
         th.innerText = '아이템명'
+        tr.appendChild(th)
+
+        th = document.createElement('th')
+        th.innerText = '시간'
+        tr.appendChild(th)
+
+        th = document.createElement('th')
+        th.innerText = '수량'
         tr.appendChild(th)
 
         th = document.createElement('th')
@@ -146,22 +151,137 @@ class Pagination {
 
             td = document.createElement('td')
             td.classList.add('item-list-name')
-            td.innerText = item['item_name']
+
+            let btn = document.createElement('button');
+            btn.innerText = item['item_name']
+
+            // 툴팁
+            const tooltip = document.createElement('div');
+            let $tooltip = $(tooltip);
+
+            // 툴팁 - 이름
+            const detail_item_name = document.createElement('div')
+            detail_item_name.innerText = item['item_display_name']
+            let $detail_item_name = $(detail_item_name)
+            $detail_item_name.css({
+                textAlign: 'center',
+                color: '#fff',
+                padding: '5px',
+                borderRadius: '5px',
+                display: 'block',
+                marginBottom: '5px'
+            })
+            tooltip.appendChild(detail_item_name)
+
+            // 툴팁 - 아이템 속성
+            const detail_item_option = document.createElement('fieldset')
+            const legend = document.createElement('legend')
+            legend.innerText = "아이템 속성"
+            detail_item_option.appendChild(legend)
+
+            let $detail_item_option = $(detail_item_option)
+            $detail_item_option.css({
+                display: 'block',
+                padding: '5px',
+                borderRadius: '5px',
+                border: '1px solid #fff'
+            })
+
+
+            let item_option = item['item_option'];
+            for (let i=0; i<item_option.length; i++) {
+                if (item_option[i]['option_type'] == '내구력') {
+                    detail_item_option.innerText = "내구력 " + item_option[i]['option_value'] + "/" + item_option[i]['option_value2'];
+                }
+            }
+            tooltip.appendChild(detail_item_option)
+
+            $tooltip.css({
+                width: '300px',
+                position: 'absolute',
+                backgroundColor: '#222',
+                color: '#fff',
+                padding: '5px',
+                borderRadius: '5px',
+                display: 'none',
+                fontSize: '14px',
+                fontFamily: 'MabinogiClassicR'
+            });
+
+            td.append(tooltip);
+
+            btn.addEventListener('mouseenter', function(e) {
+                tooltip.style.display = 'block';
+                tooltip.style.left = e.pageX + 10 + 'px';
+                tooltip.style.top = e.pageY + 10 + 'px';
+            });
+            btn.addEventListener('mouseleave', function() {
+                tooltip.style.backgroundColor = '#333';
+                tooltip.style.color = '#fff';
+                tooltip.style.display = 'none';
+            });
+            btn.addEventListener('mousemove', function(e) {
+                tooltip.style.padding = '5px';
+                tooltip.style.borderRadius = '5px';
+                tooltip.style.top = e.pageY + 10 + 'px';
+                tooltip.style.left = e.pageX + 10 + 'px';
+                tooltip.style.display = 'block';
+                document.body.appendChild(tooltip);
+            });
+            // btn.addEventListener('mouseenter', function(e) {
+            //     console.log('hover')
+            //     tooltip.style.top = e.pageY + 10 + 'px';
+            // });
+
+            td.appendChild(btn)
+            tr.appendChild(td)
+
+            td = document.createElement('td')
+            td.classList.add('item-list-time')
+            td.innerText = parseTime(item['date_auction_expire'])
+            td.style.width='120px'
+            tr.appendChild(td)
+
+            td = document.createElement('td')
+            td.classList.add('item-list-count')
+            td.innerText = item['item_count']
+            td.style.width='30px'
             tr.appendChild(td)
 
             td = document.createElement('td')
             td.classList.add('item-list-price')
-            td.innerText = parsePrice(item['auction_price_per_unit'])
+            let span = document.createElement('span')
+            span.innerText = "개당: "+parsePrice(item['auction_price_per_unit'])
+            span.classList.add('item-list-price-per-unit')
+
             if(item['auction_price_per_unit'] >= 100000000){
-                td.style.color = '#e88d90';
-                td.style.fontWeight = 'bold';
-                td.style.textShadow = '0 0 5px #9b3e42';
-            } else if (item['auction_price_per_unit'] >= 10000){
-                td.style.color = '#94c1dd';
-                td.style.fontWeight = 'bold';
-                td.style.textShadow = '0 0 5px #69889C';
+                span.style.color = '#e88d90';
+                span.style.fontWeight = 'bold';
+                span.style.textShadow = '0 0 5px #9b3e42';
+            } else if(item['auction_price_per_unit'] >= 10000){
+                span.style.color = '#94c1dd';
+                span.style.fontWeight = 'bold';
+                span.style.textShadow = '0 0 5px #69889C';
             }
-            // drawDetail(td)
+
+            td.appendChild(span)
+            span = document.createElement('span')
+            span.innerText = "전체: "+parsePrice(item['auction_price_per_unit'] * item['item_count'])
+            span.classList.add('item-list-price-total')
+            if(item['auction_price_per_unit'] * item['item_count'] >= 100000000) {
+                span.style.color = '#e88d90';
+                span.style.fontWeight = 'bold';
+                span.style.textShadow = '0 0 5px #9b3e42';
+            } else if(item['auction_price_per_unit'] * item['item_count'] >= 10000){
+                span.style.color = '#94c1dd';
+                span.style.fontWeight = 'bold';
+                span.style.textShadow = '0 0 5px #69889C';
+            }
+            td.style.width='250px'
+            td.appendChild(span)
+
+            span.style.display = 'block'
+
             tr.appendChild(td)
         }
     }
@@ -233,21 +353,6 @@ async function getSampleData(){
     }
 }
 
-function parsePrice(price){
-    let priceStr = price.toString()
-    let priceLen = priceStr.length
-    let parsedPrice = ""
-    let cnt = 0
-    for (let i=priceLen-1; i>=0; i--){
-        parsedPrice = priceStr[i] + parsedPrice
-        cnt++
-        if (cnt % 3 == 0 && i != 0){
-            parsedPrice = "," + parsedPrice
-        }
-    }
-    return parsedPrice
-}
-
 function parsePrice(price) {
     let priceStr = price.toString();
     let priceLen = priceStr.length;
@@ -280,6 +385,18 @@ function parsePrice(price) {
     return parsedPrice + " Gold";
 }
 
+function parseTime(time){
+    let date = new Date;
+    let timeDate = new Date(time);
+    let diff = timeDate - date
+    if(diff < 0) return "만료"
+    let diffSec = diff / 1000;
+    let diffMin = diffSec / 60;
+    let diffHour = Math.ceil(diffMin / 60);
+
+    return diffHour+' 시간'
+}
+
 function getItemDetailInfo(items){
     let itemInfos = []
     items.forEach(i => {
@@ -297,8 +414,7 @@ function getItemDetailInfo(items){
     return itemInfos
 }
 
-// TODO: draw paging
-function drawPaging(items){
+function drawDetilaedInfo(items){
 
 }
 

@@ -11,7 +11,6 @@ body {
     margin: 0;
     padding: 0;
 }
-
 /* Header */
 #header{
     width: 100%;
@@ -152,8 +151,19 @@ body {
     text-align:center;
 }
 
+#content td button{
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+}
+
 #content .item-list-price{
 }
+
+
 /* paging */
 #paging{
     display: inline;
@@ -178,3 +188,5 @@ body {
     background-color: #F09319;
     color: #fff;
 }
+
+ul.nav li.dropdown:hover > ul.dropdown-menu { display:block; margin:0; }
