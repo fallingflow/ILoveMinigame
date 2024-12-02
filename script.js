@@ -144,6 +144,7 @@ class Pagination {
 
             // 툴팁
             const tooltip = document.createElement('div');
+            tooltip.id = 'tooltip';
             let $tooltip = $(tooltip);
 
             // 툴팁 - 이름
@@ -218,6 +219,42 @@ class Pagination {
                         detail_item_option_content.innerText = "숙련 " + item_option[i]['option_value'];
                         detail_item_option.appendChild(detail_item_option_content)
                     }
+                    if (item_option[i]['option_type'] == '아이템 보호') {
+                        detail_item_option_content = document.createElement('div')
+                        detail_item_option_content.classList.add('item-option-content')
+                        detail_item_option_content.innerText = "(" + item_option[i]['option_value'] + " 시 아이템 보호)";
+                        let $detail_item_option_content = $(detail_item_option_content)
+                        $detail_item_option_content.css('color', '#0098FD')
+                        detail_item_option.appendChild(detail_item_option_content)
+                    }
+                    if(item_option[i]['option_type'] == '피어싱 레벨') {
+                        detail_item_option_content = document.createElement('div')
+                        detail_item_option_content.classList.add('item-option-content')
+
+                        let detail_item_option_content_ex = document.createElement('span')
+                        detail_item_option_content_ex.innerText = "피어싱 레벨 " + item_option[i]['option_value'];
+                        let $detail_item_option_content_ex = $(detail_item_option_content_ex)
+                        $detail_item_option_content_ex.css('color', '#0098FD')
+                        detail_item_option_content.appendChild(detail_item_option_content_ex)
+
+                        if(item_option[i]['option_value2'] != null){
+                            let detail_item_option_content_ex2 = document.createElement('span')
+                            detail_item_option_content_ex2.innerText = " "+item_option[i]['option_value2'];
+                            let $detail_item_option_content_ex2 = $(detail_item_option_content_ex2)
+                            $detail_item_option_content_ex2.css('color', '#F09319')
+                            detail_item_option_content.appendChild(detail_item_option_content_ex2)
+                        }
+
+                        detail_item_option.appendChild(detail_item_option_content)
+                    }
+                    if(item_option[i]['option_type'] == '남은 전용 해제 가능 횟수'){
+                        detail_item_option_content = document.createElement('div')
+                        detail_item_option_content.classList.add('item-option-content')
+                        detail_item_option_content.innerText = "남은 전용 해제 가능 횟수 : " + item_option[i]['option_value'];
+                        detail_item_option.appendChild(detail_item_option_content)
+                    }
+
+
                 }
 
                 tooltip.appendChild(detail_item_option)
@@ -360,7 +397,18 @@ class Pagination {
                             item_option_upgrade_container.appendChild(item_option_upgrade_ex)
                         }
                         if (item_option[i]['option_type'] == '특별 개조') {
-                            item_option_upgrade_special.innerText = "특별 개조 " + item_option[i]['option_sub_type'] + item_option[i]['option_value']
+                            let item_option_upgrade_special_ex = document.createElement('span')
+                            let item_option_upgrade_special_ex2 = document.createElement('span')
+                            item_option_upgrade_special_ex.innerText = '특별 개조 '
+                            item_option_upgrade_special_ex2.innerText = item_option[i]['option_sub_type'] + item_option[i]['option_value']
+
+                            let $item_option_upgrade_special_ex = $(item_option_upgrade_special_ex)
+                            let $item_option_upgrade_special_ex2 = $(item_option_upgrade_special_ex2)
+                            $item_option_upgrade_special_ex2.css('color', '#FF6A00')
+
+                            item_option_upgrade_special.appendChild(item_option_upgrade_special_ex)
+                            item_option_upgrade_special.appendChild(item_option_upgrade_special_ex2)
+
                             item_option_upgrade_container.appendChild(item_option_upgrade_special)
                         }
                         detail_item_option.appendChild(item_option_upgrade_container)
@@ -370,8 +418,106 @@ class Pagination {
 
 
                 //툴팁 - 세공
+                let isRefineAvailable = false
+                let item_option_refine_container
+                let item_option_refine_rank
+                let item_option_refine_option
+                let item_option_refine_option_ex
+
+                for(let i=0; i<item_option.length; i++){
+                    item_option_refine_container = document.createElement('div')
+                    item_option_refine_rank = document.createElement('div')
+                    item_option_refine_option = document.createElement('div')
+                    item_option_refine_option_ex = document.createElement('div')
+
+                    if(item_option[i]['option_type'] == '세공 랭크') {
+                        if (!isRefineAvailable) {
+                            detail_item_option = document.createElement('fieldset')
+                            legend = document.createElement('span')
+                            legend.classList.add('item-option-legend')
+                            legend.innerText = "세공"
+                            detail_item_option.appendChild(legend)
+
+                            detail_item_option_content = document.createElement('div')
+                            detail_item_option_content.classList.add('item-option-content')
+                            item_option = item['item_option'];
+
+                            isRefineAvailable = true
+                        }
+
+
+
+                        item_option_refine_rank.innerText = item_option[i]['option_value'] + ' 랭크'
+                        let $item_option_refine_rank = $(item_option_refine_rank)
+                        if (item_option[i]['option_value'] == 1) {
+                            $item_option_refine_rank.css('color', '#CC4293')
+                        } else if (item_option[i]['option_value'] == 2) {
+                            $item_option_refine_rank.css('color', '#F3C121')
+                        }
+                    }
+                    if(item_option[i]['option_type'] == '세공 옵션') {
+                        let str = item_option[i]['option_value'].split('(')
+                        item_option_refine_option.innerText = str[0]
+                        item_option_refine_option_ex.innerText = '('+str[1]
+                        let $item_option_refine_option = $(item_option_refine_option)
+                        let $item_option_refine_option_ex = $(item_option_refine_option_ex)
+                        $item_option_refine_option.css('color', '#0098FD')
+                        $item_option_refine_option_ex.css('color', '#0098FD')
+                    }
+
+
+                    item_option_refine_container.appendChild(item_option_refine_rank)
+                    item_option_refine_container.appendChild(item_option_refine_option)
+                    item_option_refine_container.appendChild(item_option_refine_option_ex)
+                    detail_item_option.appendChild(item_option_refine_container)
+                    tooltip.appendChild(detail_item_option)
+
+                }
+
 
                 //툴팁 - 에르그
+                let isErgAvailable = false
+                let item_option_erg_container
+                let item_option_erg_rank
+                let item_option_erg_level
+                let item_option_erg_max_level
+
+                for (let i=0; i<item_option.length; i++){
+                    if(item_option[i]['option_type'] == '에르그'){
+                        if (!isErgAvailable) {
+                            detail_item_option = document.createElement('fieldset')
+                            legend = document.createElement('span')
+                            legend.classList.add('item-option-legend')
+                            legend.innerText = "에르그"
+                            detail_item_option.appendChild(legend)
+
+                            detail_item_option_content = document.createElement('div')
+                            detail_item_option_content.classList.add('item-option-content')
+                            item_option = item['item_option'];
+
+                            isErgAvailable = true
+                        }
+
+                        item_option_erg_container = document.createElement('div')
+                        item_option_erg_rank = document.createElement('div')
+                        item_option_erg_level = document.createElement('div')
+                        item_option_erg_max_level = document.createElement('div')
+
+                        item_option_erg_rank.innerText = "등급 "+item_option[i]['option_sub_type']
+                        let $item_option_erg_rank = $(item_option_erg_rank)
+                        $item_option_erg_rank.css('color', '#CC4293')
+
+                        item_option_erg_level.innerText = '레벨 '+item_option[i]['option_value']
+                        item_option_erg_max_level.innerText = '최대 레벨 '+item_option[i]['option_value2']
+
+                        item_option_erg_container.appendChild(item_option_erg_rank)
+                        item_option_erg_container.appendChild(item_option_erg_level)
+                        item_option_erg_container.appendChild(item_option_erg_max_level)
+                        detail_item_option.appendChild(item_option_erg_container)
+                        tooltip.appendChild(detail_item_option)
+                    }
+                }
+
                 
                 //툴팁 - 세트효과
 
@@ -452,21 +598,18 @@ class Pagination {
             td.append(tooltip);
 
             // TODO: 툴팁 길이가 화면 길이보다 길 경우 위치 처리
-            btn.addEventListener('mouseenter', function(e) {
+            btn.addEventListener('click', function(e) {
                 tooltip.style.display = 'block';
-                tooltip.style.left = e.pageX + 10 + 'px';
-                tooltip.style.top = e.pageY + 10 + 'px';
+                tooltip.style.left = e.pageX + 'px';
+                tooltip.style.top = e.pageY  + 'px';
             });
-            btn.addEventListener('mouseleave', function() {
-                tooltip.style.display = 'none';
+            document.addEventListener('click', function(e) {
+                if (!tooltip.contains(e.target) && e.target !== btn) {
+                    tooltip.style.display = 'none';
+                }
             });
-            btn.addEventListener('mousemove', function(e) {
-                tooltip.style.left = e.pageX + 10 + 'px';
-                tooltip.style.top = e.pageY + 10 + 'px';
-            });
-            btn.addEventListener('wheel', function(e) {
-                tooltip.style.display='block';
-            });
+
+
 
             td.appendChild(btn)
             tr.appendChild(td)
