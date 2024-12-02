@@ -5,11 +5,14 @@
     font-style: normal;
 }
 
-body {
+html, body {
     width: 100%;
+    height: 100%;
     background-color: #000;
     margin: 0;
     padding: 0;
+    display:flex;
+    flex-direction: column;
 }
 
 /* Header */
@@ -133,10 +136,15 @@ body {
 
     margin-top: 40px;
     background-color: #000;
+
+    flex: 1;
+    flex-direction:column;
 }
 
 /* content */
 #content{
+    flex:1;
+
     height: 100%;
     width: 980px;
 
