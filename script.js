@@ -1,20 +1,3 @@
-let NUMBER_OF_ITEMS = 50
-
-class Ajax {
-    constructor(address, apiKey){
-        this.address = address;
-        this.apiKey = apiKey;
-    }
-
-    getDataByCategory(category, cursor = null, paging = 0){}
-    getDataByName(name, cursor = null){}
-    getSampleData(){}
-
-    getItemDetailInfo(items){}
-
-    parsePrice(price){}
-
-}
 class Pagination {
     constructor(data, itemsPerPage){
         this.data = data;
@@ -138,8 +121,11 @@ class Pagination {
         table.appendChild(tbody)
 
         for (let i=0; i<this.itemsPerPage; i++){
+
             let itemIndex = this.itemsPerPage * (n-1) + i
             let item = this.data[itemIndex];
+
+            if(item == null) break;
 
             let tr = document.createElement('tr')
             tbody.appendChild(tr)
@@ -153,7 +139,7 @@ class Pagination {
             td.classList.add('item-list-name')
 
             let btn = document.createElement('button');
-            btn.innerText = item['item_name']
+            btn.innerText = item['item_display_name']
 
             // 툴팁
             const tooltip = document.createElement('div');
@@ -169,69 +155,317 @@ class Pagination {
                 padding: '5px',
                 borderRadius: '5px',
                 display: 'block',
-                marginBottom: '5px'
             })
             tooltip.appendChild(detail_item_name)
 
-            // 툴팁 - 아이템 속성
-            const detail_item_option = document.createElement('fieldset')
-            const legend = document.createElement('legend')
-            legend.innerText = "아이템 속성"
-            detail_item_option.appendChild(legend)
-
-            let $detail_item_option = $(detail_item_option)
-            $detail_item_option.css({
-                display: 'block',
-                padding: '5px',
-                borderRadius: '5px',
-                border: '1px solid #fff'
-            })
-
-
             let item_option = item['item_option'];
-            for (let i=0; i<item_option.length; i++) {
-                if (item_option[i]['option_type'] == '내구력') {
-                    detail_item_option.innerText = "내구력 " + item_option[i]['option_value'] + "/" + item_option[i]['option_value2'];
+            if(item_option != null){
+                // 툴팁 - 아이템 속성
+                let isPropertyAvailable = false
+                let detail_item_option
+                let legend
+
+                let detail_item_option_content
+
+                for (let i=0; i<item_option.length; i++) {
+                    if(!isPropertyAvailable){
+                        detail_item_option = document.createElement('fieldset')
+                        legend = document.createElement('span')
+                        legend.classList.add('item-option-legend')
+                        legend.innerText = "아이템 속성"
+                        detail_item_option.appendChild(legend)
+
+                        detail_item_option_content = document.createElement('div')
+                        detail_item_option_content.classList.add('item-option-content')
+                        item_option = item['item_option'];
+
+                        isPropertyAvailable = true
+                    }
+                    if (item_option[i]['option_type'] == '공격'){
+                        detail_item_option_content = document.createElement('div')
+                        detail_item_option_content.classList.add('item-option-content')
+                        detail_item_option_content.innerText = "공격 " + item_option[i]['option_value'] + "~" + item_option[i]['option_value2'];
+                        detail_item_option.appendChild(detail_item_option_content)
+                    }
+                    if (item_option[i]['option_type'] == '부상률'){
+                        detail_item_option_content = document.createElement('div')
+                        detail_item_option_content.classList.add('item-option-content')
+                        detail_item_option_content.innerText = "부상률 " + item_option[i]['option_value'] + "~" + item_option[i]['option_value2'];
+                        detail_item_option.appendChild(detail_item_option_content)
+                    }
+                    if (item_option[i]['option_type'] == '크리티컬'){
+                        detail_item_option_content = document.createElement('div')
+                        detail_item_option_content.classList.add('item-option-content')
+                        detail_item_option_content.innerText = "크리티컬 " + item_option[i]['option_value'];
+                        detail_item_option.appendChild(detail_item_option_content)
+                    }
+                    if (item_option[i]['option_type'] == '밸런스'){
+                        detail_item_option_content = document.createElement('div')
+                        detail_item_option_content.classList.add('item-option-content')
+                        detail_item_option_content.innerText = "밸런스 " + item_option[i]['option_value'];
+                        detail_item_option.appendChild(detail_item_option_content)
+                    }
+                    if (item_option[i]['option_type'] == '내구력') {
+                        detail_item_option_content = document.createElement('div')
+                        detail_item_option_content.classList.add('item-option-content')
+                        detail_item_option_content.innerText = "내구력 " + item_option[i]['option_value'] + "/" + item_option[i]['option_value2'];
+                        detail_item_option.appendChild(detail_item_option_content)
+                    }
+                    if (item_option[i]['option_type'] == '숙련') {
+                        detail_item_option_content = document.createElement('div')
+                        detail_item_option_content.classList.add('item-option-content')
+                        detail_item_option_content.innerText = "숙련 " + item_option[i]['option_value'];
+                        detail_item_option.appendChild(detail_item_option_content)
+                    }
                 }
+
+                tooltip.appendChild(detail_item_option)
+
+                // 툴팁 - 인챈트
+                let isEnchantAvailable = false
+                let item_option_enchant_container
+                let item_option_enchant_prefix
+                let item_option_enchant_suffix
+                let item_option_enchant_prefix_ex
+                let item_option_enchant_suffix_ex
+
+                for(let i=0; i<item_option.length; i++) {
+                    if (item_option[i]['option_type'] == '인챈트') {
+                        if (!isEnchantAvailable) {
+                            detail_item_option = document.createElement('fieldset')
+                            legend = document.createElement('span')
+                            legend.classList.add('item-option-legend')
+                            legend.innerText = "인챈트"
+                            detail_item_option.appendChild(legend)
+
+                            detail_item_option_content = document.createElement('div')
+                            detail_item_option_content.classList.add('item-option-content')
+                            item_option = item['item_option'];
+
+                            isEnchantAvailable = true
+                        }
+                        if (item_option[i]['option_sub_type'] == '접두') {
+                            item_option_enchant_container = document.createElement('div')
+                            item_option_enchant_prefix = document.createElement('div')
+                            item_option_enchant_prefix_ex = document.createElement('div')
+
+                            item_option_enchant_prefix.innerText = "[접두] " + item_option[i]['option_value']
+
+                            // parse enchant ex
+                            let enchant_ex = item_option[i]['option_desc'].split(',')
+                            let item_option_enchant_ex_str
+                            for (let j=0; j<enchant_ex.length; j++){
+                                item_option_enchant_ex_str = document.createElement('div')
+                                item_option_enchant_ex_str.innerText = enchant_ex[j]
+                                let $item_option_enchant_ex_str = $(item_option_enchant_ex_str)
+                                $item_option_enchant_ex_str.css('color', '#888')
+                                item_option_enchant_prefix_ex.appendChild(item_option_enchant_ex_str)
+                            }
+
+                            // item_option_enchant_prefix_ex.innerText = item_option[i]['option_desc']
+
+                            item_option_enchant_container.appendChild(item_option_enchant_prefix)
+                            item_option_enchant_container.appendChild(item_option_enchant_prefix_ex)
+                        }
+                        if (item_option[i]['option_sub_type'] == '접미') {
+                            item_option_enchant_container = document.createElement('div')
+                            item_option_enchant_suffix = document.createElement('div')
+                            item_option_enchant_suffix_ex = document.createElement('div')
+
+                            item_option_enchant_suffix.innerText = "[접미] " + item_option[i]['option_value']
+
+                            // parse enchant ex
+                            let enchant_ex = item_option[i]['option_desc'].split(',')
+                            let item_option_enchant_ex_str
+                            for (let j=0; j<enchant_ex.length; j++){
+                                item_option_enchant_ex_str = document.createElement('div')
+                                item_option_enchant_ex_str.innerText = enchant_ex[j]
+                                let $item_option_enchant_ex_str = $(item_option_enchant_ex_str)
+                                $item_option_enchant_ex_str.css('color', '#888')
+                                item_option_enchant_suffix_ex.appendChild(item_option_enchant_ex_str)
+                            }
+
+                            // item_option_enchant_suffix_ex.innerText = item_option[i]['option_desc']
+
+                            item_option_enchant_container.appendChild(item_option_enchant_suffix)
+                            item_option_enchant_container.appendChild(item_option_enchant_suffix_ex)
+
+                            let $item_option_enchant_container = $(item_option_enchant_container)
+                        }
+                        detail_item_option.appendChild(item_option_enchant_container)
+                        tooltip.appendChild(detail_item_option)
+                    }
+                }
+
+                //툴팁 - 개조
+                let isUpgradeAvailable = false
+                let item_option_upgrade_container
+                let item_option_upgrade_normal
+                let item_option_upgrade_jewel
+                let item_option_upgrade_art
+                let item_option_upgrade_special
+                let item_option_upgrade_ex
+                let item_option_upgrade_ex_str
+
+                for(let i=0; i<item_option.length; i++) {
+                    if (item_option[i]['option_type'].includes('개조')) {
+                        if (!isUpgradeAvailable) {
+                            detail_item_option = document.createElement('fieldset')
+                            legend = document.createElement('span')
+                            legend.classList.add('item-option-legend')
+                            legend.innerText = "개조"
+                            detail_item_option.appendChild(legend)
+
+                            detail_item_option_content = document.createElement('div')
+                            detail_item_option_content.classList.add('item-option-content')
+                            item_option = item['item_option'];
+
+                            isUpgradeAvailable = true
+                        }
+
+                        item_option_upgrade_container = document.createElement('div')
+                        item_option_upgrade_normal = document.createElement('div')
+                        item_option_upgrade_jewel = document.createElement('div')
+                        item_option_upgrade_art = document.createElement('div')
+                        item_option_upgrade_special = document.createElement('div')
+                        item_option_upgrade_ex = document.createElement('div')
+
+                        if (item_option[i]['option_type'] == '일반 개조') {
+                            item_option_upgrade_normal.innerText = "일반 개조 " + item_option[i]['option_value'] + "/" + item_option[i]['option_value2']
+                            item_option_upgrade_container.appendChild(item_option_upgrade_normal)
+                        }
+                        if (item_option[i]['option_type'] == '보석 개조') {
+                            item_option_upgrade_jewel.innerText = "보석 개조 " + item_option[i]['option_value']
+                            item_option_upgrade_container.appendChild(item_option_upgrade_jewel)
+                        }
+                        if (item_option[i]['option_type'] == '장인 개조') {
+                            item_option_upgrade_art.innerText = "장인 개조"
+
+                            // parse upgrade ex
+
+                            if(item_option[i]['option_value'] != null) {
+                                let str = item_option[i]['option_value'].split(',')
+                                let item_option_upgrade_ex_str
+                                for (let j=0; j<str.length; j++){
+                                    item_option_upgrade_ex_str = document.createElement('div')
+                                    item_option_upgrade_ex_str.innerText = str[j]
+                                    let $item_option_upgrade_ex_str = $(item_option_upgrade_ex_str)
+                                    $item_option_upgrade_ex_str.css('color', '#888')
+                                    item_option_upgrade_ex.appendChild(item_option_upgrade_ex_str)
+                                }
+                            }
+
+                            item_option_upgrade_container.appendChild(item_option_upgrade_art)
+                            item_option_upgrade_container.appendChild(item_option_upgrade_ex)
+                        }
+                        if (item_option[i]['option_type'] == '특별 개조') {
+                            item_option_upgrade_special.innerText = "특별 개조 " + item_option[i]['option_sub_type'] + item_option[i]['option_value']
+                            item_option_upgrade_container.appendChild(item_option_upgrade_special)
+                        }
+                        detail_item_option.appendChild(item_option_upgrade_container)
+                        tooltip.appendChild(detail_item_option)
+                    }
+                }
+
+
+                //툴팁 - 세공
+
+                //툴팁 - 에르그
+                
+                //툴팁 - 세트효과
+
+                // 툴팁 - 아이템 염색
+                let isColorAvailable = false
+                let item_option_color_container
+                let item_option_color
+                let item_option_color_preview
+
+                for(let i=0; i<item_option.length; i++){
+                    if(item_option[i]['option_type'] == '아이템 색상'){
+                        if(!isColorAvailable){
+                            detail_item_option = document.createElement('fieldset')
+                            legend = document.createElement('span')
+                            legend.classList.add('item-option-legend')
+                            legend.innerText = "아이템 염색"
+                            detail_item_option.appendChild(legend)
+
+                            detail_item_option_content = document.createElement('div')
+                            detail_item_option_content.classList.add('item-option-content')
+                            item_option = item['item_option'];
+
+                            isColorAvailable = true
+                        }
+
+                        item_option_color_container = document.createElement('div')
+                        item_option_color = document.createElement('span')
+                        item_option_color_preview = document.createElement('span')
+
+                        let $item_option_color_container = $(item_option_color_container)
+                        let $item_option_color = $(item_option_color)
+                        let $item_option_color_preview = $(item_option_color_preview)
+                        let rgb
+
+                        if(item_option[i]['option_value'] != null){
+                            item_option_color.innerText = item_option[i]['option_sub_type'] + ": " + item_option[i]['option_value'];
+                            item_option_color_preview.innerText ='　';
+                            rgb = item_option[i]['option_value'].split(',')
+                        } else if(item_option[i]['option_desc'] == "(반짝)"){
+                            item_option_color.innerText = item_option[i]['option_sub_type'] + ": (반짝)"
+                            rgb = "반짝"
+                        }
+
+                        $item_option_color.css({
+                            padding: '2px',
+                            borderRadius: '5px',
+                            color: '#fff'
+                        })
+                        $item_option_color_preview.css({
+                            width: '10px',
+                            marginRight: '5px',
+                            backgroundColor: (rgb == "반짝" ? null : 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')')
+                        })
+                        item_option_color_container.appendChild(item_option_color_preview)
+                        item_option_color_container.appendChild(item_option_color)
+                        detail_item_option_content.appendChild(item_option_color_container)
+
+                    }
+                }
+                detail_item_option.appendChild(detail_item_option_content)
+                tooltip.appendChild(detail_item_option)
             }
-            tooltip.appendChild(detail_item_option)
 
             $tooltip.css({
                 width: '300px',
                 position: 'absolute',
-                backgroundColor: '#222',
+                backgroundColor: 'rgb(51, 51, 51)',
                 color: '#fff',
-                padding: '5px',
                 borderRadius: '5px',
                 display: 'none',
                 fontSize: '14px',
-                fontFamily: 'MabinogiClassicR'
+                fontFamily: 'MabinogiClassicR',
+                padding: '7px',
+                textAlign: 'left',
+                lineHeight: '1.3',
             });
 
             td.append(tooltip);
 
+            // TODO: 툴팁 길이가 화면 길이보다 길 경우 위치 처리
             btn.addEventListener('mouseenter', function(e) {
                 tooltip.style.display = 'block';
                 tooltip.style.left = e.pageX + 10 + 'px';
                 tooltip.style.top = e.pageY + 10 + 'px';
             });
             btn.addEventListener('mouseleave', function() {
-                tooltip.style.backgroundColor = '#333';
-                tooltip.style.color = '#fff';
                 tooltip.style.display = 'none';
             });
             btn.addEventListener('mousemove', function(e) {
-                tooltip.style.padding = '5px';
-                tooltip.style.borderRadius = '5px';
-                tooltip.style.top = e.pageY + 10 + 'px';
                 tooltip.style.left = e.pageX + 10 + 'px';
-                tooltip.style.display = 'block';
-                document.body.appendChild(tooltip);
+                tooltip.style.top = e.pageY + 10 + 'px';
             });
-            // btn.addEventListener('mouseenter', function(e) {
-            //     console.log('hover')
-            //     tooltip.style.top = e.pageY + 10 + 'px';
-            // });
+            btn.addEventListener('wheel', function(e) {
+                tooltip.style.display='block';
+            });
 
             td.appendChild(btn)
             tr.appendChild(td)
@@ -256,11 +490,11 @@ class Pagination {
 
             if(item['auction_price_per_unit'] >= 100000000){
                 span.style.color = '#e88d90';
-                span.style.fontWeight = 'bold';
+                // span.style.fontWeight = 'bold';
                 span.style.textShadow = '0 0 5px #9b3e42';
             } else if(item['auction_price_per_unit'] >= 10000){
                 span.style.color = '#94c1dd';
-                span.style.fontWeight = 'bold';
+                // span.style.fontWeight = 'bold';
                 span.style.textShadow = '0 0 5px #69889C';
             }
 
@@ -270,11 +504,11 @@ class Pagination {
             span.classList.add('item-list-price-total')
             if(item['auction_price_per_unit'] * item['item_count'] >= 100000000) {
                 span.style.color = '#e88d90';
-                span.style.fontWeight = 'bold';
+                // span.style.fontWeight = 'bold';
                 span.style.textShadow = '0 0 5px #9b3e42';
             } else if(item['auction_price_per_unit'] * item['item_count'] >= 10000){
                 span.style.color = '#94c1dd';
-                span.style.fontWeight = 'bold';
+                // span.style.fontWeight = 'bold';
                 span.style.textShadow = '0 0 5px #69889C';
             }
             td.style.width='250px'
@@ -287,41 +521,44 @@ class Pagination {
     }
 }
 
-function getDataByCategory(category, cursor = null, paging = 0) {
-    let url = address + "?auction_item_category=" + category
 
-    if (cursor != null){
+items = []
+function getDataByCategory(category, address, apikey, cursor = null, paging = 0) {
+    url = address + "?auction_item_category=" + category
+
+    if (cursor != null) {
         url += "&cursor=" + cursor
     }
-    console.log(url)
-
     $.ajax({
         method: "GET",
         url: url,
         beforeSend: function (xhr) {
-            xhr.setRequestHeader("x-nxopen-api-key", API_KEY)
+            xhr.setRequestHeader("x-nxopen-api-key", apikey)
         },
         success: function (res) {
-            items.push(res['auction_item'])
-            if (paging < 2){
+            items.push(res['auction_item']);
+            if (paging < 2 && res['next_cursor'] != null) {
                 paging++
-                getDataByCategory(category, res['next_cursor'], paging)
+                getDataByCategory(category, address, apikey, res['next_cursor'], paging)
+            }else{
+                let infos = getItemDetailInfo();
+
+                console.log(infos)
+
+                let pagination = new Pagination(infos, 20);
+                pagination.renderPagination(1);
+                pagination.drawTable(1);
+
+
+                return infos
             }
         }
-    })
-
-    // const blob = new Blob([JSON.stringify(items)], {type: 'application/json'});
-    // const url = URL.createObjectURL(blob);
-    // const a = document.createElement
-    // a.href = url
-    // a.download = 'items.json'
-    // a.click()
-    //
-    // URL.revokeObjectURL(url)
+    });
 }
 
-function getDataByName(name, cursor = null){
+function getDataByName(name, address, apikey, cursor = null, paging=0){
     let url = address + "?item_name=" + name
+
     if (cursor != null){
         url += "&cursor=" + cursor
     }
@@ -329,17 +566,33 @@ function getDataByName(name, cursor = null){
         method: "GET",
         url: url,
         beforeSend: function (xhr) {
-            xhr.setRequestHeader("x-nxopen-api-key", API_KEY)
+            xhr.setRequestHeader("x-nxopen-api-key", apikey)
         },
         success: function (res) {
-            console.log(res)
+            items.push(res['auction_item']);
+            if (paging < 2 && res['next_cursor'] != null) {
+                paging++
+                getDataByName(name, address, apikey, res['next_cursor'], paging)
+            }else{
+                let infos = getItemDetailInfo();
+
+                console.log(infos)
+
+                let pagination = new Pagination(infos, 20);
+                pagination.renderPagination(1);
+                pagination.drawTable(1);
+
+
+                return infos
+            }
         }
-    })
+    });
 }
+
 
 async function getSampleData(){
     try{
-        const response = await fetch('data/items.json');
+        const response = await fetch('data/items2.json');
 
         if(!response.ok){
             throw new Error('Network response was not ok');
@@ -351,6 +604,23 @@ async function getSampleData(){
         console.error("Error fetching JSON:", error);
         throw [];
     }
+}
+
+function getItemDetailInfo() {
+    let itemInfos = []
+    items.forEach(i => {
+        i.forEach(item => {
+            itemInfos.push({
+                "item_name": item['item_name'],
+                "item_display_name": item['item_display_name'],
+                "item_count": item['item_count'],
+                "auction_price_per_unit": item['auction_price_per_unit'],
+                "date_auction_expire": item['date_auction_expire'],
+                "item_option": item['item_option']
+            })
+        })
+    })
+    return itemInfos
 }
 
 function parsePrice(price) {
@@ -397,50 +667,23 @@ function parseTime(time){
     return diffHour+' 시간'
 }
 
-function getItemDetailInfo(items){
-    let itemInfos = []
-    items.forEach(i => {
-        i.forEach(item => {
-            itemInfos.push({
-                "item_name": item['item_name'],
-                "item_display_name": item['item_display_name'],
-                "item_count": item['item_count'],
-                "auction_price_per_unit": item['auction_price_per_unit'],
-                "date_auction_expire": item['date_auction_expire'],
-                "item_option": item['item_option']
-            })
-        })
-    })
-    return itemInfos
-}
-
-function drawDetilaedInfo(items){
-
-}
-
-// function drawDetail(td, item){
-//     td.addEventListner('hover', function(){
-//         console.log('hover')
-//     })
-// }
-
 $(document).ready(function () {
-    let ajax = new Ajax(
-        "https://open.api.nexon.com/mabinogi/v1/auction/list",
-        "test_3aea5b595556584ab54c0245a7e2a9eabac8e93dac17f6ee655c7eee8787f8cdefe8d04e6d233bd35cf2fabdeb93fb0d"
-    )
+    const address = "https://open.api.nexon.com/mabinogi/v1/auction/list";
+    const apikey = "test_3aea5b595556584ab54c0245a7e2a9ea6147d1642ba5988c6308cf189a253d7cefe8d04e6d233bd35cf2fabdeb93fb0d";
 
-    let infos
-    getSampleData()
-        .then(data => {
-            infos = getItemDetailInfo(data)
+    // getSampleData()
+    //     .then(data => {
+    //         infos = getItemDetailInfo(data)
+    //
+    //         itemsPerPage = 20;
+    //         let paging = new Pagination(infos, itemsPerPage);
+    //         paging.renderPagination(1)
+    //         paging.drawTable(1)
+    //
+    //     }).catch(error => {
+    //     console.error("Error fetching JSON:", error);
+    //     })
 
-            itemsPerPage = 20;
-            let paging = new Pagination(infos, itemsPerPage);
-            paging.renderPagination(1)
-            paging.drawTable(1)
+    getDataByName('나이트브링어 워로드', address, apikey)
 
-        }).catch(error => {
-        console.error("Error fetching JSON:", error);
-        })
-    })
+});
