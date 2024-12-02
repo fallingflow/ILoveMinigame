@@ -52,7 +52,7 @@ html, body {
     border-radius: 5px;
 }
 #header-left-title:hover{
-    background-color: hsla(0,0%,100%,.1)
+    background-color: #444;
 }
 
 .header-submenu {
@@ -125,7 +125,7 @@ html, body {
     padding: 0 4px;
 }
 .submenu:hover{
-    background-color: hsla(0,0%,100%,.1)
+    background-color: #666;
     /*background-color: #48484B;*/
 }
 .submenu svg{
@@ -203,14 +203,13 @@ html, body {
 }
 
 #paging li a{
-    color: #fff;
+    color: #F09319;
     padding: 0 5px;
     text-decoration: none;
 }
 
 #page-current{
     background-color: #F09319;
-    color: #fff;
 }
 
 /* Detailed tooltip */

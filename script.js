@@ -36,11 +36,12 @@ class Pagination {
         }
         for (let i = start; i <= end; i++){
             const li = document.createElement('li');
+            let $li = $(li)
             if (i == currentPage){
-                li.insertAdjacentHTML("beforeend", `<a href="#" id="page-${i}" style="padding:2px 5px; background-color: #f09319; color:#fff;">${i}</a>`);
+                li.insertAdjacentHTML("beforeend", `<a href="#" id="page-${i}" style="padding:2px 5px; font-weight:bold; color:#F09319; background-color: #666;">${i}</a>`);
             }
             else{
-                li.insertAdjacentHTML("beforeend", `<a href="#" id="page-${i} style="padding:5px;">${i}</a>`);
+                li.insertAdjacentHTML("beforeend", `<a href="#" id="page-${i}" style="padding:5px; font-weight:bold;">${i}</a>`);
             }
             fragmentPage.appendChild(li)
 
