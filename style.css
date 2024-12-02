@@ -59,7 +59,6 @@ body {
 /* Navigator */
 #navigator{
     width: 170px;
-    height: 120px;
 
     display:flex;
     flex-direction: column;
@@ -90,12 +89,29 @@ body {
     margin: auto auto 0;
 }
 .navigator-submenu{
+    display: flex;
+    align-items: center;
     width: 160px;
     text-align: left;
 }
+.navigator-submenu svg{
+    margin-right: 5px;
+}
+.navigator-submenu form{
+    display: flex;
+    align-items: center;
+}
+
 .navigator-submenu-text{
     font-size: 12px;
     padding-right: 5px;
+}
+
+#search{
+    display: block;
+    height: 35px;
+    margin: 10px 0 0 5px;
+    width:  120px;
 }
 
 .submenu{

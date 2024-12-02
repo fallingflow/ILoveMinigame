@@ -10,6 +10,7 @@ class Pagination {
     }
 
     renderPagination(currentPage){
+
         if(this. totalCount <= 20) return;
 
         let pageGroup = Math.ceil(currentPage / this.pageGroupNum);
@@ -578,6 +579,8 @@ function getDataByName(name, address, apikey, cursor = null, paging=0){
 
                 console.log(infos)
 
+                document.getElementById('paging').innerHTML = ""
+
                 let pagination = new Pagination(infos, 20);
                 pagination.renderPagination(1);
                 pagination.drawTable(1);
@@ -686,4 +689,13 @@ $(document).ready(function () {
 
     getDataByName('나이트브링어 워로드', address, apikey)
 
+    document.getElementById('inputForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        items = []
+
+        let word = document.getElementById('search').value;
+        getDataByName(word, address, apikey);
+    });
+
 });
+
